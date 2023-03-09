@@ -6,9 +6,6 @@ local list_data = {}
 local selected_list = {['val_x'] = 0, ['val_y'] = 0}
 
 function init(self)
-	-- Add initialization code here
-	-- Learn more: https://defold.com/manuals/script/
-	-- Remove this function if not needed
 	msg.post(".", "acquire_input_focus")
 
 	-- init list inventory to add from
@@ -18,8 +15,6 @@ function init(self)
 		end
 	end
 	
-	-- pprint(move_data[1].child_data)
-	-- pprint(move_data[#move_data].child_data)
 	gooey.horizontal_dynamic_list("list_box", "list_box_stencil", "list_box_item", list_data, nil, nil,
 	{ carousel = true }, nil, refresh_list_box)
 end
@@ -27,6 +22,7 @@ end
 function init_list_data_item(item)
 	item.child_data = {}
 	item.child_node = {}
+	
 	-- create child data
 	local x_offset = 15
 	local y_offset = 15
@@ -51,6 +47,7 @@ end
 
 
 function on_list_box_click(list)
+	-- selecting list item
 	local selected_list_data = list.data[list.selected_item.index]
 	selected_list = {['val_x'] = selected_list_data.val_x, ['val_y'] = selected_list_data.val_y}
 	pprint(selected_list)
@@ -109,6 +106,7 @@ function refresh_list_box(list)
 end
 
 function on_plus_click(button)
+	-- add random item from list_inv
 	local tmp = table.remove(list_inv, math.random(#list_inv))
 	tmp = init_list_data_item(tmp)
 	table.insert(list_data, tmp)
@@ -131,13 +129,13 @@ function remove_list_data_item(val_x, val_y)
 end
 
 function on_minus_click(button)
-	print(#list_data)
-	--pprint(selected_list)
-	--pprint(list_data[1])
 	remove_list_data_item(selected_list.val_x, selected_list.val_y)
 	table.insert(list_inv, {['val_x'] = selected_list.val_x, ['val_y'] = selected_list.val_y})
 	selected_list = {['val_x'] = 0, ['val_y'] = 0}
-	print(#list_data)
+
+	-- uncomment this to manually refresh the carousel, works but still has a visually jarring effect
+	--gooey.horizontal_dynamic_list("list_box", "list_box_stencil", "list_box_item", list_data, action_id, action,
+	--{ carousel = true }, on_list_box_click, refresh_list_box)
 end
 
 function on_input(self, action_id, action)
